@@ -14,6 +14,7 @@ final class CircleDrawView: UIView {
     private var currentTouchPosition: CGPoint?
     private var latestTimerAngle: CGFloat?
     private var previousPoint: CGPoint = .init(x: 0, y: 0)
+    private let feedbackGenerator = UISelectionFeedbackGenerator()
     private let startAngle: CGFloat = 270
     
     init(radius: CGFloat) {
@@ -46,6 +47,12 @@ final class CircleDrawView: UIView {
               let previousTouchPoint = currentTouchPosition else { return }
         drawArc(targetPoint: newTouchPoint)
         currentTouchPosition = newTouchPoint
+        generateFeedback()
+    }
+    
+    private func generateFeedback() {
+        feedbackGenerator.prepare()
+        feedbackGenerator.selectionChanged()
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -68,9 +75,9 @@ final class CircleDrawView: UIView {
     func redrawTimer() {
         let calculatedAngle =  calculateAngle(touchPoint: previousPoint)
         let roundedNextAngleFromPreviousPoint = (round(calculatedAngle * 10) - subtractSeconds) / 10.0
-#if DEBUG
-        print("seconds left : \(Int(roundedNextAngleFromPreviousPoint * 10))")
-#endif
+        #if DEBUG
+        printSecondsLeft(roundedAngle: roundedNextAngleFromPreviousPoint)
+        #endif
         guard roundedNextAngleFromPreviousPoint > 0 else {
             stopTimer()
             drawingLayer?.sublayers?.forEach({ $0.removeFromSuperlayer() })
@@ -95,6 +102,10 @@ final class CircleDrawView: UIView {
         drawArc(targetPoint: newPointInCircle)
         latestTimerAngle = roundedNextAngleFromPreviousPoint
         subtractSeconds = 0
+    }
+    
+    private func printSecondsLeft(roundedAngle: CGFloat) {
+        print("seconds left : \(Int(roundedAngle * 10))")
     }
     
     func stopTimer() {
