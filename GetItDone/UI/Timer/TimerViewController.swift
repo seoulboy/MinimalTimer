@@ -3,7 +3,7 @@ import UIKit
 final class TimerViewController: UIViewController {
     enum Constant {
         static let dotRadius: CGFloat = circleRadius/8
-        static let circleRadius: CGFloat = 150
+        static let circleRadius: CGFloat = (UIScreen.main.bounds.width / 2) - 50
         static let framePadding: CGFloat = 50
     }
     

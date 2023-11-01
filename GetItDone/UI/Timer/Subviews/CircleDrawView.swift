@@ -99,7 +99,7 @@ final class CircleDrawView: UIView {
         }
         
         previousPoint = newPointInCircle
-        drawArc(targetPoint: newPointInCircle)
+        drawArc(targetPoint: newPointInCircle, color: LayoutConstant.highlightedSectionColor.withAlphaComponent(0.9))
         latestTimerAngle = roundedNextAngleFromPreviousPoint
         subtractSeconds = 0
     }
@@ -129,7 +129,7 @@ final class CircleDrawView: UIView {
         return targetAngle.radianToDegree
     }
     
-    private func drawArc(targetPoint: CGPoint) {
+    private func drawArc(targetPoint: CGPoint, color: UIColor = LayoutConstant.highlightedSectionColor.withAlphaComponent(0.3)) {
         setupDrawingLayerIfNeeded()
         
         drawingLayer?.sublayers?.forEach({ $0.removeFromSuperlayer() })
@@ -148,11 +148,11 @@ final class CircleDrawView: UIView {
         let line = CAShapeLayer()
         line.contentsScale = UIScreen.main.scale
         line.path = path.cgPath
-        line.fillColor = LayoutConstant.highlightedSectionColor.cgColor
+        line.fillColor = color.cgColor
         line.opacity = 1
         line.lineWidth = 1
         line.lineCap = .round
-        line.strokeColor = LayoutConstant.highlightedSectionColor.cgColor
+        line.strokeColor = color.cgColor
 
         drawingLayer?.addSublayer(line)
     }
@@ -198,7 +198,7 @@ final class CircleDrawView: UIView {
 extension CircleDrawView {
     enum LayoutConstant {
         static let backgroundColor: UIColor = .gray.withAlphaComponent(0.1)
-        static let highlightedSectionColor: UIColor = .systemRed.withAlphaComponent(0.7)
+        static let highlightedSectionColor: UIColor = .systemRed
     }
     enum Numbers {
         static let circleInDegrees: CGFloat = 360
