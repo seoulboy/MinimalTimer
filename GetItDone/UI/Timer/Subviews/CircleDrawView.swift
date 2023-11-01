@@ -1,12 +1,19 @@
 import UIKit
 
+protocol CircleDrawViewDelegate: AnyObject {
+    func didSetTimer(secondsLeft: Int)
+}
+
 final class CircleDrawView: UIView {
+    weak var delegate: CircleDrawViewDelegate?
+    var subtractSeconds: CGFloat = 0
+    var timer: Timer?
     let radius: CGFloat
     private lazy var centerInBounds: CGPoint = { .init(x: radius, y: radius) }()
     private var drawingLayer: CALayer?
     private var currentTouchPosition: CGPoint?
     private var latestTimerAngle: CGFloat?
-    private var timer: Timer?
+    private var previousPoint: CGPoint = .init(x: 0, y: 0)
     private let startAngle: CGFloat = 270
     
     init(radius: CGFloat) {
@@ -45,24 +52,31 @@ final class CircleDrawView: UIView {
         guard let touchEndPoint = touches.first?.location(in: self) else { return }
         drawArc(targetPoint: touchEndPoint)
         startTimer(touchEndPoint: touchEndPoint)
+        didSetTimer()
     }
     
-    var previousPoint: CGPoint = .init(x: 0, y: 0)
-    
-    private func startTimer(touchEndPoint: CGPoint) {
-        previousPoint = touchEndPoint
+    func startTimer(touchEndPoint: CGPoint? = nil) {
+        if let touchEndPoint {
+            previousPoint = touchEndPoint
+        }
         
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(redrawTimer), userInfo: nil, repeats: true)
         timer?.fire()
     }
     
     @objc
-    private func redrawTimer() {
+    func redrawTimer() {
         let calculatedAngle =  calculateAngle(touchPoint: previousPoint)
-        let roundedNextAngleFromPreviousPoint = round(calculatedAngle * 10) / 10.0
+        let roundedNextAngleFromPreviousPoint = (round(calculatedAngle * 10) - subtractSeconds) / 10.0
 #if DEBUG
         print("seconds left : \(Int(roundedNextAngleFromPreviousPoint * 10))")
 #endif
+        guard roundedNextAngleFromPreviousPoint > 0 else {
+            stopTimer()
+            drawingLayer?.sublayers?.forEach({ $0.removeFromSuperlayer() })
+            self.latestTimerAngle = nil
+            return
+        }
         
         let nextLocation = calculateNextLocation(prevAngleInDegrees: roundedNextAngleFromPreviousPoint)
         let newX = centerInBounds.x + nextLocation.x
@@ -80,9 +94,10 @@ final class CircleDrawView: UIView {
         previousPoint = newPointInCircle
         drawArc(targetPoint: newPointInCircle)
         latestTimerAngle = roundedNextAngleFromPreviousPoint
+        subtractSeconds = 0
     }
     
-    private func stopTimer() {
+    func stopTimer() {
         timer?.invalidate()
         timer = nil
     }
@@ -159,6 +174,13 @@ final class CircleDrawView: UIView {
         let result = topPartOfEquation / bottomPartOfEquation
         let radians = acos(result)
         return radians
+    }
+    
+    private func didSetTimer() {
+        let calculatedAngle =  calculateAngle(touchPoint: previousPoint)
+        let roundedNextAngleFromPreviousPoint = (round(calculatedAngle * 10) - subtractSeconds) / 10.0
+        let secondsLeft = Int(roundedNextAngleFromPreviousPoint * 10)
+        delegate?.didSetTimer(secondsLeft: secondsLeft)
     }
 }
 

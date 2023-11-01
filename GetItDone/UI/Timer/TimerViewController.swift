@@ -7,9 +7,10 @@ final class TimerViewController: UIViewController {
         static let framePadding: CGFloat = 50
     }
     
-    private lazy var timerFrameView: UIView = createTimerFrameView()
-    private lazy var circleDrawView: UIView = createCircleDrawView()
+    private lazy var timerFrameView: TimerFrameView = createTimerFrameView()
+    private lazy var circleDrawView: CircleDrawView = createCircleDrawView()
     private lazy var centerDot: UIView = createDot()
+    private var enteredBackgroundTime: Date?
     private let viewModel: TimerViewModelType
     
     init(viewModel: TimerViewModelType) {
@@ -18,6 +19,7 @@ final class TimerViewController: UIViewController {
         configure()
         addSubviews()
         layout()
+        bindNotification()
     }
     
     required init?(coder: NSCoder) {
@@ -64,7 +66,7 @@ final class TimerViewController: UIViewController {
     }
     
     private func configure() {
-        view.backgroundColor = .white
+        view.backgroundColor = .black
     }
     
     private func createTimerFrameView() -> TimerFrameView {
@@ -76,6 +78,7 @@ final class TimerViewController: UIViewController {
     private func createCircleDrawView() -> CircleDrawView {
         let view = CircleDrawView(radius: Constant.circleRadius)
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.delegate = self
         return view
     }
     
@@ -87,6 +90,64 @@ final class TimerViewController: UIViewController {
         view.layer.cornerRadius = Constant.dotRadius
         self.view.addSubview(view)
         return view
+    }
+}
+
+// MARK: Notifications
+extension TimerViewController {
+    private func bindNotification() {
+        bindWillEnterForegroundNotification()
+        bindDidEnterBackgroundNotification()
+    }
+    
+    private func bindWillEnterForegroundNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+    }
+    
+    private func bindDidEnterBackgroundNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
+    }
+    
+    @objc
+    private func willEnterForeground() {
+        guard let enteredBackgroundTime else { return }
+        subtractElapsedTime(from: enteredBackgroundTime)
+        circleDrawView.startTimer()
+    }
+    
+    private func subtractElapsedTime(from enteredBackgroundTime: Date) {
+        let elapsedTime = enteredBackgroundTime.distance(to: .now)
+        circleDrawView.subtractSeconds = CGFloat(elapsedTime)
+    }
+    
+    @objc
+    private func didEnterBackground() {
+        guard circleDrawView.timer?.isValid == true else { return }
+        circleDrawView.stopTimer()
+        enteredBackgroundTime = Date()
+    }
+}
+
+// MARK: - Schedule Local Push Notification
+extension TimerViewController: CircleDrawViewDelegate {
+    func didSetTimer(secondsLeft: Int) {
+        scheduleNotification(after: secondsLeft)
+    }
+    
+    private func scheduleNotification(after seconds: Int) {
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        let content = UNMutableNotificationContent()
+        content.title = "Time is up!"
+        content.body = "Got'em done!"
+        content.sound = UNNotificationSound.default
+        
+        guard let triggerDate = Calendar.current.date(byAdding: .second, value: seconds, to: .now) else { return }
+        let dateComponents = Calendar.current.dateComponents([.minute,.second,.nanosecond], from: triggerDate)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+        let uuidString = UUID().uuidString
+        let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+        let notificationCenter = UNUserNotificationCenter.current()
+        notificationCenter.add(request)
     }
 }
 
