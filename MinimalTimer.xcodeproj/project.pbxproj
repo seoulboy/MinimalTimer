@@ -42,7 +42,7 @@
 		7145C09F2AB10ED0006138C0 /* TimerUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerUseCase.swift; sourceTree = "<group>"; };
 		7145C0A22AB10FCF006138C0 /* AppFlowCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFlowCoordinator.swift; sourceTree = "<group>"; };
 		7145C0A42AB10FF4006138C0 /* AppDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDIContainer.swift; sourceTree = "<group>"; };
-		71B5898A2A9E975D006DED3C /* GetItDone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GetItDone.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		71B5898A2A9E975D006DED3C /* MinimalTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MinimalTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		71B5898D2A9E975D006DED3C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		71B5898F2A9E975D006DED3C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		71B589962A9E975E006DED3C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -154,7 +154,7 @@
 		71B589812A9E975D006DED3C = {
 			isa = PBXGroup;
 			children = (
-				71B5898C2A9E975D006DED3C /* GetItDone */,
+				71B5898C2A9E975D006DED3C /* MinimalTimer */,
 				71B5898B2A9E975D006DED3C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -162,12 +162,12 @@
 		71B5898B2A9E975D006DED3C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				71B5898A2A9E975D006DED3C /* GetItDone.app */,
+				71B5898A2A9E975D006DED3C /* MinimalTimer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		71B5898C2A9E975D006DED3C /* GetItDone */ = {
+		71B5898C2A9E975D006DED3C /* MinimalTimer */ = {
 			isa = PBXGroup;
 			children = (
 				7145C0A62AB11116006138C0 /* Application */,
@@ -180,15 +180,15 @@
 				71B589982A9E975E006DED3C /* LaunchScreen.storyboard */,
 				71B5899B2A9E975E006DED3C /* Info.plist */,
 			);
-			path = GetItDone;
+			path = MinimalTimer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		71B589892A9E975D006DED3C /* GetItDone */ = {
+		71B589892A9E975D006DED3C /* MinimalTimer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 71B5899E2A9E975E006DED3C /* Build configuration list for PBXNativeTarget "GetItDone" */;
+			buildConfigurationList = 71B5899E2A9E975E006DED3C /* Build configuration list for PBXNativeTarget "MinimalTimer" */;
 			buildPhases = (
 				71B589862A9E975D006DED3C /* Sources */,
 				71B589872A9E975D006DED3C /* Frameworks */,
@@ -198,9 +198,9 @@
 			);
 			dependencies = (
 			);
-			name = GetItDone;
+			name = MinimalTimer;
 			productName = GetItDone;
-			productReference = 71B5898A2A9E975D006DED3C /* GetItDone.app */;
+			productReference = 71B5898A2A9E975D006DED3C /* MinimalTimer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -218,7 +218,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 71B589852A9E975D006DED3C /* Build configuration list for PBXProject "GetItDone" */;
+			buildConfigurationList = 71B589852A9E975D006DED3C /* Build configuration list for PBXProject "MinimalTimer" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -231,7 +231,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				71B589892A9E975D006DED3C /* GetItDone */,
+				71B589892A9E975D006DED3C /* MinimalTimer */,
 			);
 		};
 /* End PBXProject section */
@@ -405,23 +405,31 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = P3N3WN679X;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = QZA35QY3B5;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GetItDone/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MinimalTimer;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = getitdone.GetItDone;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imhojang.minimaltimer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = profile;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -433,23 +441,31 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = P3N3WN679X;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = QZA35QY3B5;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GetItDone/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MinimalTimer;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = getitdone.GetItDone;
+				PRODUCT_BUNDLE_IDENTIFIER = com.imhojang.minimaltimer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = profile;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -459,7 +475,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		71B589852A9E975D006DED3C /* Build configuration list for PBXProject "GetItDone" */ = {
+		71B589852A9E975D006DED3C /* Build configuration list for PBXProject "MinimalTimer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				71B5899C2A9E975E006DED3C /* Debug */,
@@ -468,7 +484,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		71B5899E2A9E975E006DED3C /* Build configuration list for PBXNativeTarget "GetItDone" */ = {
+		71B5899E2A9E975E006DED3C /* Build configuration list for PBXNativeTarget "MinimalTimer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				71B5899F2A9E975E006DED3C /* Debug */,
