@@ -1,7 +1,9 @@
 import UIKit
 
 protocol CircleDrawViewDelegate: AnyObject {
+    func touchesBegan()
     func didSetTimer(secondsLeft: Int)
+    func timerDone()
 }
 
 final class CircleDrawView: UIView {
@@ -10,6 +12,10 @@ final class CircleDrawView: UIView {
     var timer: Timer?
     let radius: CGFloat
     private lazy var centerInBounds: CGPoint = { .init(x: radius, y: radius) }()
+    
+    private var touchEndedPointForScheduledTimer: CGPoint = .zero
+    private var isFinishAnimation: Bool = false
+    
     private var drawingLayer: CALayer?
     private var currentTouchPosition: CGPoint?
     private var latestTimerAngle: CGFloat?
@@ -40,11 +46,11 @@ final class CircleDrawView: UIView {
         currentTouchPosition = newTouchPoint
         drawArc(targetPoint: newTouchPoint)
         backgroundColor = LayoutConstant.backgroundColor
+        delegate?.touchesBegan()
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let newTouchPoint = touches.first?.location(in: self),
-              let previousTouchPoint = currentTouchPosition else { return }
+        guard let newTouchPoint = touches.first?.location(in: self) else { return }
         drawArc(targetPoint: newTouchPoint)
         currentTouchPosition = newTouchPoint
         generateFeedback()
@@ -59,15 +65,19 @@ final class CircleDrawView: UIView {
         guard let touchEndPoint = touches.first?.location(in: self) else { return }
         drawArc(targetPoint: touchEndPoint)
         startTimer(touchEndPoint: touchEndPoint)
+        touchEndedPointForScheduledTimer = touchEndPoint
         didSetTimer()
     }
     
-    func startTimer(touchEndPoint: CGPoint? = nil) {
+    func startTimer(touchEndPoint: CGPoint? = nil, isFinishAnimation: Bool = false) {
         if let touchEndPoint {
             previousPoint = touchEndPoint
         }
         
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(redrawTimer), userInfo: nil, repeats: true)
+        self.isFinishAnimation = isFinishAnimation
+        let timeInterval = isFinishAnimation ? 0.0005 : 1
+        
+        timer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(redrawTimer), userInfo: nil, repeats: true)
         timer?.fire()
     }
     
@@ -92,9 +102,14 @@ final class CircleDrawView: UIView {
         let newPointInCircle: CGPoint = .init(x: newX, y: newY)
         
         guard newPointInCircle.x != 150, newPointInCircle.y != 0 else {
-            stopTimer()
             drawingLayer?.sublayers?.forEach({ $0.removeFromSuperlayer() })
+            stopTimer()
             self.latestTimerAngle = nil
+            guard !isFinishAnimation else {
+                finishAnimationDone()
+                return
+            }
+            self.timerDone()
             return
         }
         
@@ -129,7 +144,8 @@ final class CircleDrawView: UIView {
         return targetAngle.radianToDegree
     }
     
-    private func drawArc(targetPoint: CGPoint, color: UIColor = LayoutConstant.highlightedSectionColor.withAlphaComponent(0.3)) {
+    @discardableResult
+    private func drawArc(targetPoint: CGPoint, color: UIColor = LayoutConstant.highlightedSectionColor.withAlphaComponent(0.3)) -> CAShapeLayer {
         setupDrawingLayerIfNeeded()
         
         drawingLayer?.sublayers?.forEach({ $0.removeFromSuperlayer() })
@@ -155,6 +171,7 @@ final class CircleDrawView: UIView {
         line.strokeColor = color.cgColor
 
         drawingLayer?.addSublayer(line)
+        return line
     }
     
     private func setupDrawingLayerIfNeeded() {
@@ -192,6 +209,21 @@ final class CircleDrawView: UIView {
         let roundedNextAngleFromPreviousPoint = (round(calculatedAngle * 10) - subtractSeconds) / 10.0
         let secondsLeft = Int(roundedNextAngleFromPreviousPoint * 10)
         delegate?.didSetTimer(secondsLeft: secondsLeft)
+    }
+    
+    private func finishAnimationDone() {
+        let layer = drawArc(targetPoint: touchEndedPointForScheduledTimer, color: LayoutConstant.highlightedSectionColor)
+        let animation = CABasicAnimation(keyPath: "opacity")
+        animation.fromValue = 1
+        animation.toValue = 0
+        animation.repeatCount = 2
+        animation.duration = 0.3
+        layer.add(animation, forKey: "opacity")
+    }
+    
+    private func timerDone() {
+        startTimer(touchEndPoint: touchEndedPointForScheduledTimer, isFinishAnimation: true)
+        delegate?.timerDone()
     }
 }
 

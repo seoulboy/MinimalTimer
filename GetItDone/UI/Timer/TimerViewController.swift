@@ -85,7 +85,7 @@ final class TimerViewController: UIViewController {
     private func createDot() -> UIView {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         view.layer.cornerCurve = .continuous
         view.layer.cornerRadius = Constant.dotRadius
         self.view.addSubview(view)
@@ -132,6 +132,15 @@ extension TimerViewController {
 extension TimerViewController: CircleDrawViewDelegate {
     func didSetTimer(secondsLeft: Int) {
         scheduleNotification(after: secondsLeft)
+        timerFrameView.configureNumberLabelVisiblity(isHidden: true)
+    }
+    
+    func touchesBegan() {
+        timerFrameView.configureNumberLabelVisiblity(isHidden: false)
+    }
+    
+    func timerDone() {
+        timerFrameView.configureNumberLabelVisiblity(isHidden: false)
     }
     
     private func scheduleNotification(after seconds: Int) {
