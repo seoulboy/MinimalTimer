@@ -42,8 +42,8 @@ final class TimerViewController: UIViewController {
         NSLayoutConstraint.activate([
             timerFrameView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             timerFrameView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            timerFrameView.widthAnchor.constraint(equalToConstant: Constant.circleRadius * 2 * 1.28),
-            timerFrameView.heightAnchor.constraint(equalToConstant: Constant.circleRadius * 2 * 1.28)
+            timerFrameView.widthAnchor.constraint(equalToConstant: Constant.circleRadius * 2 * 1.30),
+            timerFrameView.heightAnchor.constraint(equalToConstant: Constant.circleRadius * 2 * 1.30)
         ])
     }
     
