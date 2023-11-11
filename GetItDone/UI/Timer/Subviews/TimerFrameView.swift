@@ -2,7 +2,7 @@ import UIKit
 
 final class TimerFrameView: UIView {
     enum Constant {
-        static let borderColor: UIColor = .systemGray2
+        static let borderColor: UIColor = .white
         static let borderWidth: CGFloat = 10
         static let backgroundColor: UIColor = .white
     }
@@ -41,7 +41,8 @@ final class TimerFrameView: UIView {
         let view = UILabel()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.text = number.description
-        view.font = .systemFont(ofSize: 20, weight: .bold)
+        view.font = LayoutConstant.labelFont
+        view.textColor = LayoutConstant.labelColor
         return view
     }
     
@@ -56,11 +57,16 @@ final class TimerFrameView: UIView {
     
     private func calculateNextLocation(position: Int) -> (x: CGFloat, y: CGFloat) {
         let radian = CGFloat(30 * position).degreeToRadian + .pi
-        let padding: CGFloat = 15
-        let radius = radius + padding
-        let x: CGFloat = radius * sin(radian)
-        let y: CGFloat = radius * cos(radian)
+        let padding: CGFloat = 20
+        let radiusWithPadding = radius + padding
+        let x: CGFloat = radiusWithPadding * sin(radian)
+        let y: CGFloat = radiusWithPadding * cos(radian)
         return (x, y)
+    }
+    
+    enum LayoutConstant {
+        static let labelColor: UIColor = .systemGray3
+        static let labelFont: UIFont = .systemFont(ofSize: 20, weight: .medium)
     }
 }
 

@@ -66,7 +66,7 @@ final class TimerViewController: UIViewController {
     }
     
     private func configure() {
-        view.backgroundColor = .black
+        view.backgroundColor = .white
     }
     
     private func createTimerFrameView() -> TimerFrameView {
@@ -85,7 +85,7 @@ final class TimerViewController: UIViewController {
     private func createDot() -> UIView {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemGray2
+        view.backgroundColor = .white
         view.layer.cornerCurve = .continuous
         view.layer.cornerRadius = Constant.dotRadius
         self.view.addSubview(view)

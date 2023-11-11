@@ -21,7 +21,7 @@ final class CircleDrawView: UIView {
         self.radius = radius
         super.init(frame: .zero)
         isUserInteractionEnabled = true
-        backgroundColor = .gray.withAlphaComponent(0.1)
+        backgroundColor = LayoutConstant.backgroundColor
         layer.cornerRadius = radius
         layer.cornerCurve = .continuous
     }
@@ -197,8 +197,8 @@ final class CircleDrawView: UIView {
 
 extension CircleDrawView {
     enum LayoutConstant {
-        static let backgroundColor: UIColor = .gray.withAlphaComponent(0.1)
-        static let highlightedSectionColor: UIColor = .systemRed
+        static let backgroundColor: UIColor = .white
+        static let highlightedSectionColor: UIColor = .init(rgb: 0xEC2C0F)
     }
     enum Numbers {
         static let circleInDegrees: CGFloat = 360
