@@ -12,7 +12,8 @@ final class TimerViewController: UIViewController {
     private lazy var centerDot: UIView = createDot()
     private var enteredBackgroundTime: Date?
     private let viewModel: TimerViewModelType
-    
+    private let notificationCenter = UNUserNotificationCenter.current()
+
     init(viewModel: TimerViewModelType) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -20,6 +21,17 @@ final class TimerViewController: UIViewController {
         addSubviews()
         layout()
         bindNotification()
+        requestNotificationAuthorization()
+    }
+    
+    func requestNotificationAuthorization() {
+        let authOptions: UNAuthorizationOptions = [.alert, .sound, .badge]
+        notificationCenter.delegate = self
+        notificationCenter.requestAuthorization(options: authOptions) { success, error in
+            if let error = error {
+                print(error)
+            }
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -42,8 +54,8 @@ final class TimerViewController: UIViewController {
         NSLayoutConstraint.activate([
             timerFrameView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             timerFrameView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            timerFrameView.widthAnchor.constraint(equalToConstant: Constant.circleRadius * 2 * 1.28),
-            timerFrameView.heightAnchor.constraint(equalToConstant: Constant.circleRadius * 2 * 1.28)
+            timerFrameView.widthAnchor.constraint(equalToConstant: Constant.circleRadius * 2 * 1.30),
+            timerFrameView.heightAnchor.constraint(equalToConstant: Constant.circleRadius * 2 * 1.30)
         ])
     }
     
@@ -66,7 +78,7 @@ final class TimerViewController: UIViewController {
     }
     
     private func configure() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
     }
     
     private func createTimerFrameView() -> TimerFrameView {
@@ -166,3 +178,10 @@ extension TimerViewController {
         return vc
     }
 }
+
+extension TimerViewController: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.banner, .sound, .list])
+    }
+}
+

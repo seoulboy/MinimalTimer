@@ -229,7 +229,7 @@ final class CircleDrawView: UIView {
 
 extension CircleDrawView {
     enum LayoutConstant {
-        static let backgroundColor: UIColor = .white
+        static let backgroundColor: UIColor = .systemBackground
         static let highlightedSectionColor: UIColor = .init(rgb: 0xEC2C0F)
     }
     enum Numbers {
