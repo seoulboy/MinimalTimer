@@ -78,7 +78,7 @@ final class TimerViewController: UIViewController {
     }
     
     private func configure() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
     }
     
     private func createTimerFrameView() -> TimerFrameView {

@@ -2,9 +2,9 @@ import UIKit
 
 final class TimerFrameView: UIView {
     enum Constant {
-        static let borderColor: UIColor = .white
+        static let borderColor: UIColor = .systemBackground
         static let borderWidth: CGFloat = 10
-        static let backgroundColor: UIColor = .white
+        static let backgroundColor: UIColor = .systemBackground
     }
     private var numberLabels: [UILabel] = []
     private let cornerRadius: CGFloat
@@ -26,7 +26,7 @@ final class TimerFrameView: UIView {
     func configureNumberLabelVisiblity(isHidden: Bool) {
         numberLabels.forEach { (label: UILabel) in
             let animator = UIViewPropertyAnimator(duration: 0.7, curve: .easeInOut)
-            animator.addAnimations { [weak self] in
+            animator.addAnimations {
                 label.alpha = isHidden ? 0 : 1
             }
             animator.startAnimation()
@@ -77,7 +77,7 @@ final class TimerFrameView: UIView {
     }
     
     enum LayoutConstant {
-        static let labelColor: UIColor = .systemGray3
+        static let labelColor: UIColor = .init(named: "TimerNumberLabelColorSet") ?? .systemGray3
         static let labelFont: UIFont = .systemFont(ofSize: 20, weight: .medium)
     }
 }
