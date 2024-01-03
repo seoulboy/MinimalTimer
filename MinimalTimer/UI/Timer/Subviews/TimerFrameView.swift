@@ -10,6 +10,10 @@ final class TimerFrameView: UIView {
     private let cornerRadius: CGFloat
     private let radius: CGFloat
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        layer.borderColor = Constant.borderColor.cgColor
+    }
     
     init(radius: CGFloat) {
         self.radius = radius
