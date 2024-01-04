@@ -34,6 +34,11 @@ final class TimerViewController: UIViewController {
         }
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        timerFrameView.toggleNumberLabelVisibility()
+        super.touchesBegan(touches, with: event)
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("You must create this view controller with a user.")
     }
@@ -144,22 +149,31 @@ extension TimerViewController {
 extension TimerViewController: CircleDrawViewDelegate {
     func didSetTimer(secondsLeft: Int) {
         scheduleNotification(after: secondsLeft)
-        timerFrameView.configureNumberLabelVisiblity(isHidden: true)
-    }
-    
-    func touchesBegan() {
-        timerFrameView.configureNumberLabelVisiblity(isHidden: false)
     }
     
     func timerDone() {
         timerFrameView.configureNumberLabelVisiblity(isHidden: false)
     }
     
+    func presentStopTimerConfirmAlert() {
+        let alert = UIAlertController(title: "A timer is already running.\nDo you wish to setup a new one?", message: nil, preferredStyle: .alert)
+        alert.addAction(.init(title: "Yes", style: .default, handler: { [weak self] _ in self?.initializeTimerViews() }))
+        alert.addAction(.init(title: "No", style: .default))
+        present(alert, animated: true)
+    }
+    
+    private func initializeTimerViews() {
+        circleDrawView.clearTimer()
+        timerFrameView.configureNumberLabelVisiblity(isHidden: false)
+    }
+    
     private func scheduleNotification(after seconds: Int) {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        let minutesLeft = seconds / 60
+        let secondsLeft = seconds % 60
         let content = UNMutableNotificationContent()
-        content.title = "Time is up!"
-        content.body = "Got'em done!"
+        content.title = "Time's up!"
+        content.body = "\(minutesLeft) minute and \(secondsLeft) seconds"
         content.sound = UNNotificationSound.default
         
         guard let triggerDate = Calendar.current.date(byAdding: .second, value: seconds, to: .now) else { return }
@@ -184,4 +198,3 @@ extension TimerViewController: UNUserNotificationCenterDelegate {
         completionHandler([.banner, .sound, .list])
     }
 }
-

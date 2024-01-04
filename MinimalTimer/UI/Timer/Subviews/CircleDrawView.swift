@@ -1,13 +1,14 @@
 import UIKit
 
 protocol CircleDrawViewDelegate: AnyObject {
-    func touchesBegan()
     func didSetTimer(secondsLeft: Int)
     func timerDone()
+    func presentStopTimerConfirmAlert()
 }
 
 final class CircleDrawView: UIView {
     weak var delegate: CircleDrawViewDelegate?
+    var shouldDrawArc = true
     var subtractSeconds: CGFloat = 0
     var timer: Timer?
     let radius: CGFloat
@@ -15,7 +16,7 @@ final class CircleDrawView: UIView {
     
     private var touchEndedPointForScheduledTimer: CGPoint = .zero
     private var isFinishAnimation: Bool = false
-    
+    private var newTouchPoint: CGPoint = .zero
     private var drawingLayer: CALayer?
     private var currentTouchPosition: CGPoint?
     private var latestTimerAngle: CGFloat?
@@ -42,15 +43,31 @@ final class CircleDrawView: UIView {
         
         guard let newTouchPoint = touches.first?.location(in: self),
               xRange.contains(newTouchPoint.x), yRange.contains(newTouchPoint.y) else { return }
+        
+        self.newTouchPoint = newTouchPoint
+        
+        if timer?.isValid == true {
+            delegate?.presentStopTimerConfirmAlert()
+            shouldDrawArc = false
+        } else {
+            startNewTimer()
+        }
+    }
+    
+    func clearTimer() {
+        stopTimer()
+        shouldDrawArc = true
+        drawingLayer?.sublayers?.forEach({ $0.removeFromSuperlayer() })
+    }
+    
+    func startNewTimer() {
         stopTimer()
         currentTouchPosition = newTouchPoint
         drawArc(targetPoint: newTouchPoint)
-        backgroundColor = LayoutConstant.backgroundColor
-        delegate?.touchesBegan()
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let newTouchPoint = touches.first?.location(in: self) else { return }
+        guard shouldDrawArc, let newTouchPoint = touches.first?.location(in: self) else { return }
         drawArc(targetPoint: newTouchPoint)
         currentTouchPosition = newTouchPoint
         generateFeedback()
@@ -62,7 +79,7 @@ final class CircleDrawView: UIView {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touchEndPoint = touches.first?.location(in: self) else { return }
+        guard shouldDrawArc, let touchEndPoint = touches.first?.location(in: self) else { return }
         drawArc(targetPoint: touchEndPoint)
         startTimer(touchEndPoint: touchEndPoint)
         touchEndedPointForScheduledTimer = touchEndPoint
@@ -120,7 +137,9 @@ final class CircleDrawView: UIView {
     }
     
     private func printSecondsLeft(roundedAngle: CGFloat) {
-        print("seconds left : \(Int(roundedAngle * 10))")
+        let seconds = Int(roundedAngle * 10) - 1
+        let minute = seconds / 60
+        print("\(minute) mins \(seconds % 60) seconds left")
     }
     
     func stopTimer() {

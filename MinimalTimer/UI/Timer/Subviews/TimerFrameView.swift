@@ -6,6 +6,7 @@ final class TimerFrameView: UIView {
         static let borderWidth: CGFloat = 10
         static let backgroundColor: UIColor = .systemBackground
     }
+    private var isNumberLabelHidden: Bool = false
     private var numberLabels: [UILabel] = []
     private let cornerRadius: CGFloat
     private let radius: CGFloat
@@ -27,14 +28,20 @@ final class TimerFrameView: UIView {
         fatalError()
     }
     
+    func toggleNumberLabelVisibility() {
+        isNumberLabelHidden.toggle()
+        configureNumberLabelVisiblity(isHidden: isNumberLabelHidden)
+    }
+    
     func configureNumberLabelVisiblity(isHidden: Bool) {
         numberLabels.forEach { (label: UILabel) in
-            let animator = UIViewPropertyAnimator(duration: 0.7, curve: .easeInOut)
+            let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeInOut)
             animator.addAnimations {
                 label.alpha = isHidden ? 0 : 1
             }
             animator.startAnimation()
         }
+        isNumberLabelHidden = isHidden
     }
     
     private func configure() {
